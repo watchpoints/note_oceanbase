@@ -401,6 +401,7 @@
 #include "sql/engine/expr/ob_expr_xml_serialize.h"
 #include "sql/engine/expr/ob_expr_xmlcast.h"
 #include "sql/engine/expr/ob_expr_update_xml.h"
+#include "sql/engine/expr/ob_expr_st_exterior_ring.h"
 
 using namespace oceanbase::common;
 namespace oceanbase
@@ -996,6 +997,7 @@ void ObExprOperatorFactory::register_expr_operators()
     REG_OP(ObExprRandom);
     REG_OP(ObExprRandstr);
     REG_OP(ObExprPrefixPattern);
+	REG_OP(ObExprSTExteriorRing);
   }();
 // 注册oracle系统函数
   REG_OP_ORCL(ObExprSysConnectByPath);

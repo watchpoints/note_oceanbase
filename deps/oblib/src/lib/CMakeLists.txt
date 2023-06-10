@@ -74,6 +74,7 @@ ob_set_subtarget(oblib_lib geo
   geo/ob_geo_func_distance.cpp
   geo/ob_geo_func_isvalid.cpp
   geo/ob_geometry_cast.cpp
+  geo/ob_geo_func_exterior_ring.cpp
 )
 
 ob_set_subtarget(oblib_lib common_mixed

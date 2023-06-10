@@ -625,10 +625,12 @@ ob_set_subtarget(ob_sql engine_expr
   engine/expr/ob_expr_st_isvalid.cpp
   engine/expr/ob_expr_st_dwithin.cpp
   engine/expr/ob_expr_st_aswkb.cpp
+  engine/expr/ob_expr_st_geomfromtext.cpp
   engine/expr/ob_expr_priv_st_asewkb.cpp
   engine/expr/ob_expr_st_distance_sphere.cpp
   engine/expr/ob_expr_st_contains.cpp
   engine/expr/ob_expr_st_within.cpp
+  engine/expr/ob_expr_st_exterior_ring.cpp
   engine/expr/ob_expr_sql_mode_convert.cpp
   engine/expr/ob_expr_prefix_pattern.cpp
   engine/expr/ob_expr_sys_makexml.cpp

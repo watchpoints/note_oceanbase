@@ -2153,6 +2153,105 @@ TEST_F(TestGeoFuncUnion, gc_split)
   ASSERT_EQ(true, is_geo_equal(*res_multi_poly, *multi_poly_tree));
 }
 
+
+TEST_F(TestGeoFuncUnion, polygon_polygon1)
+{
+  polygon_geom_t pol_bg1;
+  boost::geometry::read_wkt(
+        "POLYGON((0.0 0.0, 1.0 0.0, 1.0 4.0, 0.0 4.0, 0.0 0.0))", pol_bg1);
+  polygon_geom_t pol_bg2;
+  boost::geometry::read_wkt("POLYGON((0.0 0.0, 2.0 0.0, 2.0 1.0, 0.0 1.0, 0.0 0.0))", pol_bg2);
+  mpolygon_geom_t mpol_res_bg;
+  bg::union_(pol_bg1, pol_bg2, mpol_res_bg);
+
+  ObArenaAllocator allocator(ObModIds::TEST);
+  ObJsonBuffer data(&allocator);
+  std::vector< std::pair<double, double> > pol_val;
+  pol_val.push_back(std::make_pair(0.0, 0.0));
+  pol_val.push_back(std::make_pair(1.0, 0.0));
+  pol_val.push_back(std::make_pair(1.0, 4.0));
+  pol_val.push_back(std::make_pair(0.0, 4.0));
+  pol_val.push_back(std::make_pair(0.0, 0.0));
+  create_polygon(data, 1, 5, pol_val);
+  ObIWkbGeomPolygon poly;
+  poly.set_data(data.string());
+
+  ObJsonBuffer data1(&allocator);
+  std::vector< std::pair<double, double> > pol_val1;
+  pol_val1.push_back(std::make_pair(0.0, 0.0));
+  pol_val1.push_back(std::make_pair(2.0, 0.0));
+  pol_val1.push_back(std::make_pair(2.0, 1.0));
+  pol_val1.push_back(std::make_pair(0.0, 1.0));
+  pol_val1.push_back(std::make_pair(0.0, 0.0));
+  create_polygon(data1, 1, 5, pol_val1);
+  ObIWkbGeomPolygon poly1;
+  poly1.set_data(data1.string());
+
+  ObGeoEvalCtx gis_context(&allocator);
+  gis_context.ut_set_geo_count(2);
+  gis_context.ut_set_geo_arg(0, &poly);
+  gis_context.ut_set_geo_arg(1, &poly1);
+  ObGeometry *result = NULL;
+  int ret = ObGeoFunc<ObGeoFuncType::Union>::geo_func::eval(gis_context, result);
+  ASSERT_EQ(OB_SUCCESS, ret);
+  ASSERT_TRUE(result != NULL);
+  ASSERT_EQ(result->type(), ObGeoType::MULTIPOLYGON);
+  ASSERT_EQ(result->crs(), ObGeoCRS::Cartesian);
+  ObCartesianMultipolygon *res = reinterpret_cast<ObCartesianMultipolygon *>(result);
+  ASSERT_EQ(res->empty(), false);
+  ASSERT_EQ(res->size(), mpol_res_bg.size());
+  ASSERT_EQ(true, is_geo_equal(*res, mpol_res_bg));
+
+  ObGeoToTreeVisitor poly_visitor(&allocator);
+  ASSERT_EQ(OB_SUCCESS, poly.do_visit(poly_visitor));
+  ASSERT_EQ(poly_visitor.get_geometry()->type(), ObGeoType::POLYGON);
+  ASSERT_EQ(poly_visitor.get_geometry()->crs(), ObGeoCRS::Cartesian);
+  ObCartesianPolygon *poly_tree1 = static_cast<ObCartesianPolygon *>(poly_visitor.get_geometry());
+  ObGeoToTreeVisitor poly_visitor1(&allocator);
+  ASSERT_EQ(OB_SUCCESS, poly1.do_visit(poly_visitor1));
+  ASSERT_EQ(poly_visitor1.get_geometry()->type(), ObGeoType::POLYGON);
+  ASSERT_EQ(poly_visitor1.get_geometry()->crs(), ObGeoCRS::Cartesian);
+  ObCartesianPolygon *poly_tree2 = static_cast<ObCartesianPolygon *>(poly_visitor1.get_geometry());
+
+  ObGeoEvalCtx gis_tree_context(&allocator);
+  gis_tree_context.ut_set_geo_count(2);
+  gis_tree_context.ut_set_geo_arg(0, poly_tree1);
+  gis_tree_context.ut_set_geo_arg(1, poly_tree2);
+  ObGeometry *result_tree = NULL;
+  ret = ObGeoFunc<ObGeoFuncType::Union>::geo_func::eval(gis_tree_context, result_tree);
+  ASSERT_EQ(OB_SUCCESS, ret);
+  ASSERT_TRUE(result_tree != NULL);
+
+  std::cout<< "--------------------------------"<<std::endl;
+	ObArenaAllocator allocator(ObModIds::TEST);
+	const ObSrsItem *srs = NULL;
+	ASSERT_EQ(OB_SUCCESS, mock_get_tenant_srs_item(allocator, 4326, srs));
+	
+	ObJsonBuffer data(&allocator);
+	std::vector< std::pair<double, double> > pol_val;
+	pol_val.push_back(std::make_pair(0.0, 0.0));
+	pol_val.push_back(std::make_pair(0.0, 3));
+	pol_val.push_back(std::make_pair(3.0, 0));
+	pol_val.push_back(std::make_pair(0.0, 10.0));
+	create_polygon(data, 1, 4, pol_val);
+	ObIWkbGeogPolygon poly;
+	poly.set_data(data.string());
+
+ 
+  ObGeoEvalCtx gis_context(&allocator, srs);
+  gis_context.ut_set_geo_count(1);
+  gis_context.ut_set_geo_arg(0, poly);
+  double result = 0.0;
+  ret = ObGeoFunc<ObGeoFuncType::Area>::geo_func::eval(gis_tree_context, result);
+	std::cout<< "--------------------------------"<<result<<std::endl;
+  //ASSERT_EQ(OB_SUCCESS, ret);
+
+  
+
+ 
+}
+
+
 } // namespace common
 } // namespace oceanbase
 
