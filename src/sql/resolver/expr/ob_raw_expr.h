@@ -136,7 +136,8 @@ extern ObRawExpr *USELESS_POINTER;
     || ((op) == T_FUN_SYS_ST_DISTANCE_SPHERE) \
     || ((op) == T_FUN_SYS_ST_DWITHIN) \
     || ((op) == T_FUN_SYS_ST_WITHIN) \
-    || ((op) == T_FUN_SYS_ST_CONTAINS)) \
+    || ((op) == T_FUN_SYS_ST_CONTAINS) \
+    || ((op) == T_FUN_SYS_ST_EXTERIORRING)) \
 
 
 #define IS_PRIV_GEO_OP(op) \
