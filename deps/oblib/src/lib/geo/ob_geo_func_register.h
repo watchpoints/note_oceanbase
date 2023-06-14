@@ -29,6 +29,7 @@
 #include "lib/geo/ob_geo_func_isvalid.h"
 #include "lib/geo/ob_geo_func_distance_sphere.h"
 #include "lib/geo/ob_geo_func_within.h"
+#include "lib/geo/ob_geo_func_exterior_ring.h"
 
 namespace oceanbase
 {
@@ -56,6 +57,7 @@ enum class ObGeoFuncType
   IsValid = 12,
   DistanceSphere = 13,
   Within = 14,
+  ExteriorRing = 15,
   ObGisFuncTypeMax
 };
 
@@ -159,6 +161,13 @@ struct ObGeoFunc<ObGeoFuncType::Within>
 {
   typedef ObGeoFuncWithin gis_func;
 };
+
+template <>
+struct ObGeoFunc<ObGeoFuncType::ExteriorRing>
+{
+  typedef ObGeoFuncExteriorRing geo_func;
+};
+
 
 } // sql
 } // oceanbase

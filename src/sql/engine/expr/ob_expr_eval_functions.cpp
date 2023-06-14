@@ -303,6 +303,7 @@
 #include "ob_expr_st_distance_sphere.h"
 #include "ob_expr_st_contains.h"
 #include "ob_expr_st_within.h"
+#include "ob_expr_st_exterior_ring.h"
 #include "ob_expr_priv_st_asewkb.h"
 #include "ob_expr_name_const.h"
 #include "ob_expr_format_bytes.h"
@@ -1033,8 +1034,8 @@ static ObExpr::EvalFunc g_expr_eval_functions[] = {
   ObExprUpdateXml::eval_update_xml,                                   /* 603 */
   ObExprJoinFilter::eval_range_filter,                                /* 604 */
   ObExprJoinFilter::eval_in_filter,                                   /* 605 */
-  ObExprCurrentScn::eval_current_scn                                  /* 606 */
-  ObExprSTExteriorRing::eval_st_area,                                 /* 607 */
+  ObExprCurrentScn::eval_current_scn,                                 /* 606 */
+  ObExprSTExteriorRing::eval_st_area                                   /* 607 */
 };
 
 static ObExpr::EvalBatchFunc g_expr_eval_batch_functions[] = {
